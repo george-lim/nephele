@@ -1,0 +1,9 @@
+handler: src/lambda/speed_test.handler
+description: Run global broadband speed test
+memorySize: 3008
+runtime: nodejs12.x
+timeout: 90
+environment:
+  TEST_TIMEOUT: '75000'
+layers:
+  - ${self:custom.layers.chromeAwsLambda}

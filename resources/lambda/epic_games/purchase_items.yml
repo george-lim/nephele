@@ -1,0 +1,7 @@
+handler: src/lambda/epic_games/purchase_items.handler
+description: Purchase all promotional free items on Epic Games
+memorySize: 3008
+runtime: nodejs12.x
+timeout: 300
+layers:
+  - ${self:custom.layers.chromeAwsLambda}

@@ -1,0 +1,6 @@
+handler: src/lambda/kijiji/download_ads.handler
+description: Download Kijiji ads archive from server
+timeout: 30
+role: !GetAtt kijijiDownloadAdsRole.Arn
+environment:
+  KIJIJI_ADS_BUCKET_NAME: !Ref kijijiAdsBucket

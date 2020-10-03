@@ -1,0 +1,62 @@
+id: TelegramRequest
+events:
+  - ${file(resources/execute_api/telegram_webhook.yml)}
+definition:
+  StartAt: chooseFunction
+  States:
+    chooseFunction:
+      Type: Choice
+      Choices:
+        - Or:
+          - Variable: $.command
+            StringEquals: /start
+          - Variable: $.command
+            StringEquals: /help
+          Next: replyHelp
+      Default: deferRequest
+    replyHelp:
+      Type: Task
+      Resource: !GetAtt replyMessage.Arn
+      Parameters:
+        interface.$: $.interface
+        message: |
+          I can help you access George's cloud\-compatible side projects\.
+
+          You can control me by sending these commands:
+
+          ${self:custom.speedTest.command} \- ${self:functions.speedTest.description}
+
+          *Epic Games*
+          ${self:custom.epicGames.logIn.command} <username\> <password\> \[code\] \- ${self:custom.epicGames.logIn.description}
+          ${self:custom.epicGames.getPurchaseUrls.command} \- ${self:functions.epicGamesGetPurchaseUrls.description}
+          ${self:custom.epicGames.purchaseItems.command} \- ${self:functions.epicGamesPurchaseItems.description}
+          ${self:custom.epicGames.logOut.command} \- ${self:custom.epicGames.logOut.description}
+
+          *Events*
+          ${self:custom.events.putRule.command} <rule name\> <cron expression\> <command \.\.\.\> \- ${self:functions.eventsPutRule.description}
+          ${self:custom.events.listRules.command} \- ${self:functions.eventsListRules.description}
+          ${self:custom.events.enableRule.command} <rule name\> \- ${self:functions.eventsEnableRule.description}
+          ${self:custom.events.disableRule.command} <rule name\> \- ${self:functions.eventsDisableRule.description}
+          ${self:custom.events.deleteRule.command} <rule name\> \- ${self:functions.eventsDeleteRule.description}
+
+          *Kijiji*
+          ${self:custom.kijiji.logIn.command} <username\> <password\> \- ${self:custom.kijiji.logIn.description}
+          ${self:custom.kijiji.uploadAds.command} \- ${self:custom.kijiji.uploadAds.description}
+          ${self:custom.kijiji.downloadAds.command} \- ${self:functions.kijijiDownloadAds.description}
+          ${self:custom.kijiji.repostAds.command} \- ${self:functions.kijijiRepostAds.description}
+          ${self:custom.kijiji.deleteAds.command} \- ${self:functions.kijijiDeleteAds.description}
+          ${self:custom.kijiji.logOut.command} \- ${self:custom.kijiji.logOut.description}
+
+          *TextNow*
+          ${self:custom.textnow.logIn.command} <username\> <password\> \- ${self:custom.textnow.logIn.description}
+          ${self:custom.textnow.sendMessage.command} <recipient\> <message \.\.\.\> \- ${self:functions.textnowSendMessage.description}
+          ${self:custom.textnow.logOut.command} \- ${self:custom.textnow.logOut.description}
+        parseMode: MarkdownV2
+      End: true
+    deferRequest:
+      Type: Task
+      Resource: arn:aws:states:::states:startExecution
+      Parameters:
+        Input.$: $
+        StateMachineArn: !Sub arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:${self:custom.generalRequest.name}
+      End: true

@@ -1,0 +1,5 @@
+handler: src/lambda/log_in_python.handler
+description: Log into a service and get cookies
+timeout: 30
+environment:
+  KIJIJI_SERVICE_NAME: ${self:custom.kijiji.serviceName}

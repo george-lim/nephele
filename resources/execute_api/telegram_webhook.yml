@@ -1,0 +1,39 @@
+http:
+  path: ${self:custom.telegram.webhookPath}
+  method: POST
+  request:
+    template:
+      application/json: !Join
+        - ''
+        - - |-
+            ## Parse Telegram request
+            #set($command = $input.path('$.message.text'))
+            #set($chatId = $input.path('$.message.chat.id'))
+
+            ## Escape command in JSON
+            #set($command = $command.replaceAll('“|”', '\"'))
+            #set($command = $command.replaceAll('‘|’', "'"))
+            #set($command = $command.replaceAll('\\', '\\\\\\\\'))
+            #set($command = $command.replaceAll('\f', '\\\\f'))
+            #set($command = $command.replaceAll('\n', '\\\\n'))
+            #set($command = $command.replaceAll('\r', '\\\\r'))
+            #set($command = $command.replaceAll('\t', '\\\\t'))
+            #set($command = $command.replaceAll('\"', '\\\\\\\"'))
+
+            {
+              "input":
+          - !Join
+              - ' '
+              - - ' "{'
+                -     '\"command\": \"$command\",'
+                -     '\"interface\": {'
+                -       '\"name\": \"${self:custom.telegram.interfaceName}\",'
+                -       '\"chatId\": \"$chatId\",'
+                -       '\"userId\": \"${self:custom.telegram.interfaceName}_$chatId\"'
+                -     '}'
+                -   "}\",\n"
+          - '  "stateMachineArn": "'
+          - !Ref TelegramRequest
+          - |
+            "
+            }

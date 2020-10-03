@@ -1,0 +1,5 @@
+handler: src/lambda/events/delete_rule.handler
+description: Delete a scheduled command rule
+role: !GetAtt eventsDeleteRuleRole.Arn
+environment:
+  RESOURCE_PREFIX: ${self:custom.resourcePrefix}

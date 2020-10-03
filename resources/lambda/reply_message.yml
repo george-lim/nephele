@@ -1,0 +1,2 @@
+handler: src/lambda/reply_message.handler
+description: Reply with a message to interface

@@ -1,0 +1,151 @@
+org: georgelim
+app: nephele
+service: nephele
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  logRetentionInDays: 14
+  deploymentBucket:
+    maxPreviousDeploymentArtifacts: 1
+  role: !GetAtt defaultLambdaRole.Arn
+  environment:
+    TELEGRAM_INTERFACE_NAME: ${self:custom.telegram.interfaceName}
+    TELEGRAM_REQUEST_BASE_URL: ${self:custom.telegram.requestBaseUrl}
+  resourcePolicy:
+    - Effect: Allow
+      Principal: '*'
+      Action: execute-api:Invoke
+      Resource: execute-api:/*/POST/${self:custom.telegram.webhookPath}
+      Condition:
+        IpAddress:
+          aws:SourceIp:
+            - 149.154.160.0/20
+            - 91.108.4.0/22
+
+package:
+  exclude:
+    - resources/**
+    - scripts/**
+    - LICENSE
+    - package.json
+    - requirements.txt
+    - safeguards.yml
+
+functions:
+  epicGamesGetPurchaseUrls: ${file(resources/lambda/epic_games/get_purchase_urls.yml)}
+  epicGamesPurchaseItems: ${file(resources/lambda/epic_games/purchase_items.yml)}
+  eventsDeleteRule: ${file(resources/lambda/events/delete_rule.yml)}
+  eventsDisableRule: ${file(resources/lambda/events/disable_rule.yml)}
+  eventsEnableRule: ${file(resources/lambda/events/enable_rule.yml)}
+  eventsListRules: ${file(resources/lambda/events/list_rules.yml)}
+  eventsPutRule: ${file(resources/lambda/events/put_rule.yml)}
+  kijijiDeleteAds: ${file(resources/lambda/kijiji/delete_ads.yml)}
+  kijijiDownloadAds: ${file(resources/lambda/kijiji/download_ads.yml)}
+  kijijiRepostAds: ${file(resources/lambda/kijiji/repost_ads.yml)}
+  logInNodejs: ${file(resources/lambda/log_in_nodejs.yml)}
+  logInPython: ${file(resources/lambda/log_in_python.yml)}
+  replyMessage: ${file(resources/lambda/reply_message.yml)}
+  speedTest: ${file(resources/lambda/speed_test.yml)}
+  textnowSendMessage: ${file(resources/lambda/textnow/send_message.yml)}
+  uploadFile: ${file(resources/lambda/upload_file.yml)}
+
+resources:
+  - ${file(resources/dynamodb/users_table.yml)}
+  - ${file(resources/iam/events/delete_rule_role.yml)}
+  - ${file(resources/iam/events/disable_rule_role.yml)}
+  - ${file(resources/iam/events/enable_rule_role.yml)}
+  - ${file(resources/iam/events/list_rules_role.yml)}
+  - ${file(resources/iam/events/put_rule_role.yml)}
+  - ${file(resources/iam/events/start_execution_role.yml)}
+  - ${file(resources/iam/kijiji/delete_ads_role.yml)}
+  - ${file(resources/iam/kijiji/download_ads_role.yml)}
+  - ${file(resources/iam/default_lambda_role.yml)}
+  - ${file(resources/iam/upload_file_role.yml)}
+  - ${file(resources/s3/kijiji_ads_bucket.yml)}
+
+plugins:
+  - '@serverless/safeguards-plugin'
+  - serverless-step-functions
+  - serverless-plugin-common-excludes
+  - serverless-python-requirements
+  - serverless-prune-plugin
+  - serverless-stack-output
+
+custom:
+  epicGames:
+    serviceName: epicGames
+    logIn:
+      command: /loginepicgames
+      description: Log into Epic Games
+    getPurchaseUrls:
+      command: /listfreeitems
+    purchaseItems:
+      command: /purchasefreeitems
+    logOut:
+      command: /logoutepicgames
+      description: Log out of Epic Games
+  events:
+    putRule:
+      command: /putrule
+    listRules:
+      command: /listrules
+    enableRule:
+      command: /enablerule
+    disableRule:
+      command: /disablerule
+    deleteRule:
+      command: /deleterule
+  generalRequest:
+    name: ${self:custom.resourcePrefix}-generalRequest
+  kijiji:
+    serviceName: kijiji
+    logIn:
+      command: /loginkijiji
+      description: Log into Kijiji
+    uploadAds:
+      command: /uploadads
+      description: Upload Kijiji ads archive to server
+    downloadAds:
+      command: /downloadads
+    repostAds:
+      command: /repostads
+    deleteAds:
+      command: /deleteads
+    logOut:
+      command: /logoutkijiji
+      description: Log out of Kijiji
+  layers:
+    chromeAwsLambda: arn:aws:lambda:us-east-1:764866452798:layer:chrome-aws-lambda:21
+  resourcePrefix: ${self:service}-${self:provider.stage}-${self:provider.region}
+  speedTest:
+    command: /speedtest
+  telegram:
+    interfaceName: telegram
+    requestBaseUrl: https://api.telegram.org/bot${param:TELEGRAM_BOT_API_TOKEN}
+    webhookPath: ${self:custom.telegram.interfaceName}/webhook
+  textnow:
+    serviceName: textnow
+    logIn:
+      command: /logintextnow
+      description: Log into TextNow
+    sendMessage:
+      command: /sms
+    logOut:
+      command: /logouttextnow
+      description: Log out of TextNow
+  safeguards: ${file(safeguards.yml)}
+  pythonRequirements:
+    slim: true
+  prune:
+    automatic: true
+    number: 1
+  output:
+    handler: scripts/telegram_set_webhook.handler
+
+stepFunctions:
+  stateMachines:
+    generalRequest: ${file(resources/states/general_request.yml)}
+    telegramRequest: ${file(resources/states/telegram_request.yml)}

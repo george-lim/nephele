@@ -1,0 +1,6 @@
+handler: src/lambda/kijiji/repost_ads.handler
+description: Repost all Kijiji ads on server
+timeout: 900
+role: !GetAtt kijijiDownloadAdsRole.Arn
+environment:
+  KIJIJI_ADS_BUCKET_NAME: !Ref kijijiAdsBucket
