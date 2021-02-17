@@ -1,0 +1,8 @@
+serviceName: epicGames
+lambdaFunction:
+  logIn:
+    command: /loginepicgames
+  purchaseFreeContent:
+    command: /purchasefreecontent
+  logOut:
+    command: /logoutepicgames

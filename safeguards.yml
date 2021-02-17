@@ -8,7 +8,6 @@
   description: This policy restricts the runtimes that can be used in services.
   config:
     - python3.8
-    - nodejs12.x
 - safeguard: allowed-stages
   title: Allowed Stages
   description: This policy restricts the stages that can be used in services.
@@ -18,10 +17,12 @@
 - safeguard: framework-version
   title: Framework Version
   description: This policy restricts the versions of Serverless Framework that can be used.
-  config: '>=2.4.0'
+  config: '>=2.18.0'
 - safeguard: no-secret-env-vars
   title: No Cleartext Credentials in Environment Variables
   description: This policy ensures that AWS Lambda environment variables do not follow patterns of common credential formats.
 - safeguard: require-description
   title: Require Description
   description: This policy ensures that all functions have a description of minimum or maximum length.
+  config:
+    minLength: 10

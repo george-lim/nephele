@@ -1,0 +1,10 @@
+handler: lib/textnow/lambda_function/send_message.handler
+description: Send a TextNow message
+memorySize: 2048
+timeout: 30
+role: !GetAtt textnowSendMessageRole.Arn
+environment:
+  SERVICE_NAME: ${self:custom.textnow.serviceName}
+layers:
+  - !Ref ChromiumLambdaLayer
+  - !Ref RequirementsLambdaLayer

@@ -1,0 +1,10 @@
+handler: lib/epic_games/lambda_function/purchase_free_content.handler
+description: Purchase free Epic Games content
+memorySize: 2048
+timeout: 60
+role: !GetAtt epicGamesPurchaseFreeContentRole.Arn
+environment:
+  SERVICE_NAME: ${self:custom.epicGames.serviceName}
+layers:
+  - !Ref ChromiumLambdaLayer
+  - !Ref RequirementsLambdaLayer

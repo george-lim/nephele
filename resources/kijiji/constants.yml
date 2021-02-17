@@ -1,0 +1,14 @@
+serviceName: kijiji
+lambdaFunction:
+  logIn:
+    command: /loginkijiji
+  uploadAds:
+    command: /uploadads
+  downloadAds:
+    command: /downloadads
+  repostAds:
+    command: /repostads
+  deleteAds:
+    command: /deleteads
+  logOut:
+    command: /logoutkijiji

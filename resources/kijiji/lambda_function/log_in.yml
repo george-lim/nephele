@@ -1,0 +1,5 @@
+handler: lib/kijiji/lambda_function/log_in.handler
+description: Log into Kijiji
+role: !GetAtt kijijiLogInRole.Arn
+environment:
+  SERVICE_NAME: ${self:custom.kijiji.serviceName}

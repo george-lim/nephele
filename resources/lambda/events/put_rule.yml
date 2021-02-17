@@ -1,7 +1,0 @@
-handler: src/lambda/events/put_rule.handler
-description: Create or update an existing scheduled command rule
-role: !GetAtt eventsPutRuleRole.Arn
-environment:
-  RESOURCE_PREFIX: ${self:custom.resourcePrefix}
-  TARGET_ROLE_ARN: !GetAtt eventsStartExecutionRole.Arn
-  TELEGRAM_REQUEST_ARN: !Ref TelegramRequest

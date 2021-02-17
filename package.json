@@ -1,17 +1,8 @@
 {
-  "dependencies": {
-    "axios": "^0.20.0",
-    "epic-games-bot": "^1.0.15",
-    "form-data": "^3.0.0",
-    "shlex": "^2.0.2",
-    "textnow-bot": "^1.0.7"
-  },
   "devDependencies": {
     "@serverless/safeguards-plugin": "^1.1.0",
-    "serverless-plugin-common-excludes": "^3.0.0",
-    "serverless-prune-plugin": "^1.4.3",
-    "serverless-python-requirements": "^5.1.0",
-    "serverless-stack-output": "^0.2.3",
-    "serverless-step-functions": "^2.23.0"
+    "serverless-export-outputs": "^1.0.2",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-step-functions": "^2.29.0"
   }
 }

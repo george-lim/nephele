@@ -1,2 +1,6 @@
-requests
-kijiji-bot
+Brotli>=1.0.9
+epic-games-bot==1.0.0
+kijiji-bot==1.0.5
+playwright==0.171.1
+requests>=2.25.1
+textnow-bot==1.0.3

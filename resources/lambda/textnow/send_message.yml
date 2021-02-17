@@ -1,7 +1,0 @@
-handler: src/lambda/textnow/send_message.handler
-description: Send a text message from TextNow
-memorySize: 3008
-runtime: nodejs12.x
-timeout: 60
-layers:
-  - ${self:custom.layers.chromeAwsLambda}

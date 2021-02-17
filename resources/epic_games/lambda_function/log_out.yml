@@ -1,0 +1,5 @@
+handler: lib/epic_games/lambda_function/log_out.handler
+description: Log out of Epic Games
+role: !GetAtt epicGamesLogOutRole.Arn
+environment:
+  SERVICE_NAME: ${self:custom.epicGames.serviceName}

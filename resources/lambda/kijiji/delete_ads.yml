@@ -1,5 +1,0 @@
-handler: src/lambda/kijiji/delete_ads.handler
-description: Delete all Kijiji ads from server
-role: !GetAtt kijijiDeleteAdsRole.Arn
-environment:
-  KIJIJI_ADS_BUCKET_NAME: !Ref kijijiAdsBucket

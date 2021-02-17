@@ -1,0 +1,5 @@
+handler: lib/kijiji/lambda_function/log_out.handler
+description: Log out of Kijiji
+role: !GetAtt kijijiLogOutRole.Arn
+environment:
+  SERVICE_NAME: ${self:custom.kijiji.serviceName}

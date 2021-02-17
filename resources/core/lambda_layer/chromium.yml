@@ -1,0 +1,3 @@
+description: Chromium binary for Playwright
+package:
+  artifact: .serverless/chromium.zip

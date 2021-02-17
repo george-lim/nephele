@@ -1,0 +1,5 @@
+handler: lib/kijiji/lambda_function/download_ads.handler
+description: Download Kijiji ads
+role: !GetAtt kijijiDownloadAdsRole.Arn
+environment:
+  KIJIJI_AD_ARCHIVE_BUCKET_NAME: !Ref kijijiAdArchiveBucket

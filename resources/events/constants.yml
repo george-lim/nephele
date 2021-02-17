@@ -1,0 +1,11 @@
+lambdaFunction:
+  putEvent:
+    command: /putevent
+  listEvents:
+    command: /listevents
+  enableEvent:
+    command: /enableevent
+  disableEvent:
+    command: /disableevent
+  deleteEvent:
+    command: /deleteevent

@@ -1,5 +1,0 @@
-handler: src/lambda/events/list_rules.handler
-description: List all scheduled command rules
-role: !GetAtt eventsListRulesRole.Arn
-environment:
-  RESOURCE_PREFIX: ${self:custom.resourcePrefix}

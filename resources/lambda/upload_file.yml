@@ -1,6 +1,0 @@
-handler: src/lambda/upload_file.handler
-description: Generate form fields for presigned POST requests to a S3 bucket
-role: !GetAtt uploadFileRole.Arn
-environment:
-  KIJIJI_SERVICE_NAME: ${self:custom.kijiji.serviceName}
-  KIJIJI_ADS_BUCKET_NAME: !Ref kijijiAdsBucket

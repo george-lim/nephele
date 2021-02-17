@@ -1,0 +1,5 @@
+handler: lib/events/lambda_function/list_events.handler
+description: List all scheduled events
+role: !GetAtt eventsListEventsRole.Arn
+environment:
+  RESOURCE_PREFIX: ${self:custom.core.resourcePrefix}

@@ -1,0 +1,2 @@
+handler: lib/core/lambda_function/reply_message.handler
+description: Reply to request with a message

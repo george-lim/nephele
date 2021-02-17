@@ -1,5 +1,0 @@
-handler: src/lambda/events/enable_rule.handler
-description: Enable a scheduled command rule
-role: !GetAtt eventsEnableRuleRole.Arn
-environment:
-  RESOURCE_PREFIX: ${self:custom.resourcePrefix}

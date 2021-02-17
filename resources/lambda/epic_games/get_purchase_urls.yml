@@ -1,7 +1,0 @@
-handler: src/lambda/epic_games/get_purchase_urls.handler
-description: Get purchase URLs for all promotional free items on Epic Games
-memorySize: 3008
-runtime: nodejs12.x
-timeout: 180
-layers:
-  - ${self:custom.layers.chromeAwsLambda}
