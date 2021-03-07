@@ -1,0 +1,13 @@
+image:
+  name: latest
+  command: src/epic_games/functions/log_in.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Log into Epic Games
+memorySize: 2048
+timeout: 60
+environment:
+  SERVICE_NAME: ${self:custom.epicGames.serviceName}
+iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:UpdateItem
+    Resource: !GetAtt usersTable.Arn

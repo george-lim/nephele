@@ -1,7 +1,0 @@
-handler: lib/kijiji/lambda_function/repost_ads.handler
-description: Repost Kijiji ads
-timeout: 900
-role: !GetAtt kijijiRepostAdsRole.Arn
-environment:
-  KIJIJI_AD_ARCHIVE_BUCKET_NAME: !Ref kijijiAdArchiveBucket
-  SERVICE_NAME: ${self:custom.kijiji.serviceName}

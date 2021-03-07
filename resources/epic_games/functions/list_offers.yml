@@ -1,0 +1,5 @@
+image:
+  name: latest
+  command: src/epic_games/functions/list_offers.handler
+  entryPoint: /lambda-entrypoint.sh
+description: List free promotional offers on Epic Games

@@ -1,5 +1,0 @@
-handler: lib/kijiji/lambda_function/upload_ads.handler
-description: Upload Kijiji ads
-role: !GetAtt kijijiUploadAdsRole.Arn
-environment:
-  KIJIJI_AD_ARCHIVE_BUCKET_NAME: !Ref kijijiAdArchiveBucket

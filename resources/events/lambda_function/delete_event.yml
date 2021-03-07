@@ -1,5 +1,0 @@
-handler: lib/events/lambda_function/delete_event.handler
-description: Delete a scheduled event
-role: !GetAtt eventsDeleteEventRole.Arn
-environment:
-  RESOURCE_PREFIX: ${self:custom.core.resourcePrefix}

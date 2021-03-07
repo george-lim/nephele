@@ -1,0 +1,13 @@
+image:
+  name: latest
+  command: src/events/functions/delete_event.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Delete an event
+environment:
+  RESOURCE_PREFIX: ${self:custom.core.resourcePrefix}
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - events:DeleteRule
+      - events:RemoveTargets
+    Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*

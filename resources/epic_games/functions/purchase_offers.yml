@@ -1,0 +1,13 @@
+image:
+  name: latest
+  command: src/epic_games/functions/purchase_offers.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Purchase free promotional offers on Epic Games
+memorySize: 2048
+timeout: 60
+environment:
+  SERVICE_NAME: ${self:custom.epicGames.serviceName}
+iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:GetItem
+    Resource: !GetAtt usersTable.Arn

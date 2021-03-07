@@ -1,0 +1,11 @@
+image:
+  name: latest
+  command: src/kijiji/functions/log_out.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Log out of Kijiji
+environment:
+  SERVICE_NAME: ${self:custom.kijiji.serviceName}
+iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:UpdateItem
+    Resource: !GetAtt usersTable.Arn

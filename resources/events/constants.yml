@@ -1,4 +1,4 @@
-lambdaFunction:
+functions:
   putEvent:
     command: /putevent
   listEvents:

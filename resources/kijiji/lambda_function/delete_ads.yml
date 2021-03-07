@@ -1,5 +1,0 @@
-handler: lib/kijiji/lambda_function/delete_ads.handler
-description: Delete Kijiji ads
-role: !GetAtt kijijiDeleteAdsRole.Arn
-environment:
-  KIJIJI_AD_ARCHIVE_BUCKET_NAME: !Ref kijijiAdArchiveBucket

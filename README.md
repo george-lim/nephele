@@ -1,50 +1,56 @@
 # Nephele
 
-<!-- [START badges] -->
-[![framework](https://img.shields.io/badge/framework-Serverless-brightgreen)](https://serverless.com)
-[![provider](https://img.shields.io/badge/provider-AWS-brightgreen)](#)
-[![python](https://img.shields.io/badge/python-3.8-blue)](#)
-[![release](https://img.shields.io/github/v/release/george-lim/nephele)](https://github.com/george-lim/nephele/releases)
-[![license](https://img.shields.io/github/license/george-lim/nephele)](https://github.com/george-lim/nephele/blob/master/LICENSE)
-<!-- [END badges] -->
+[![releases](https://img.shields.io/github/v/release/george-lim/nephele)](https://github.com/george-lim/nephele/releases)
+[![ci](https://github.com/george-lim/nephele/workflows/CI/badge.svg)](https://github.com/george-lim/nephele/actions)
+[![codecov](https://codecov.io/gh/george-lim/nephele/branch/main/graph/badge.svg)](https://codecov.io/gh/george-lim/nephele)
+[![license](https://img.shields.io/github/license/george-lim/nephele)](https://github.com/george-lim/nephele/blob/main/LICENSE)
 
-> Nephele is an AWS serverless application that hosts George's cloud-compatible side projects.
+## [Usage](#usage) | [Features](#features) | [CI/CD](#cicd)
 
-<!-- [START getstarted] -->
-## Getting Started
+Nephele is an AWS serverless application that hosts George's cloud-compatible side projects.
+
+## Usage
+
+Nephele is accessible through the [Telegram bot](https://t.me/NepheleBot).
+Use the `/help` command to get the command list.
+
+### Dependencies
+
+```bash
+npm install -g serverless
+npm install
+python3 -m pip install -r requirements-dev.txt
+```
+
+This installs Nephele and its dependencies. You will also need [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
 ### Serverless Framework Pro
 
-1. Create a [Serverless Framework Pro](https://app.serverless.com) account
-2. Add a new app from the dashboard and update the `org` and `app` fields in `serverless.yml`
-3. Create a `prod` stage, and connect an AWS account to each stage
-4. Add the following parameter to each stage:
+1. Create a Serverless Framework Pro account
+2. Create a `serverless framework` app and link it with this project
+3. Add the following parameter to each stage:
+
 ```yaml
 TELEGRAM_BOT_API_TOKEN: <Telegram Bot API token>
 ```
 
-### Installation
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-2. Execute script on the command line:
-```bash
-yarn global add serverless
-yarn install
-python3 -m pip install -r requirements-dev.txt
-```
-
 ### Deployment
 
-1. Ensure Docker Desktop is running
-2. Execute script on the command line:
 ```bash
 sls login
 sls deploy
 ```
 
-### Clean Up
+This deploys Nephele on AWS. Ensure that Docker Desktop is running first before deploying.
 
-Layer artifacts and webhook preferences are cached after the first deployment. You will need to clear cache when updating `requirements.txt` dependencies or changing the Telegram Bot API token.
+## Features
 
-Run `sls clean` to delete the cache directory.
-<!-- [END getstarted] -->
+[Epic Games Bot](https://github.com/george-lim/epic-games-bot-python), [Kijiji Bot](https://github.com/george-lim/kijiji-bot), and [TextNow Bot](https://github.com/george-lim/textnow-bot-python) are all integrated with Nephele. For automation, Nephele supports command scheduling so that any service can have its action performed periodically.
+
+## CI/CD
+
+### Codecov
+
+You will need to authorize Codecov with your GitHub account in order to upload code coverage reports.
+
+Follow the [Codecov GitHub Action](https://github.com/codecov/codecov-action) to see how to configure the action for private repositories.

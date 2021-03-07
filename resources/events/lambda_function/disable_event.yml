@@ -1,5 +1,0 @@
-handler: lib/events/lambda_function/disable_event.handler
-description: Disable a scheduled event
-role: !GetAtt eventsDisableEventRole.Arn
-environment:
-  RESOURCE_PREFIX: ${self:custom.core.resourcePrefix}

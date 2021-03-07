@@ -1,5 +1,5 @@
 serviceName: kijiji
-lambdaFunction:
+functions:
   logIn:
     command: /loginkijiji
   uploadAds:

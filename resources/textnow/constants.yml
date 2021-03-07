@@ -1,8 +1,8 @@
 serviceName: textnow
-lambdaFunction:
+functions:
   logIn:
     command: /logintextnow
-  sendMessage:
-    command: /sendmessage
+  sendTextMessage:
+    command: /sendtextmessage
   logOut:
     command: /logouttextnow

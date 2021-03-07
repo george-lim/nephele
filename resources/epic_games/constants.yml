@@ -1,8 +1,10 @@
 serviceName: epicGames
-lambdaFunction:
+functions:
   logIn:
     command: /loginepicgames
-  purchaseFreeContent:
-    command: /purchasefreecontent
+  listOffers:
+    command: /listoffers
+  purchaseOffers:
+    command: /purchaseoffers
   logOut:
     command: /logoutepicgames

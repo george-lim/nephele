@@ -1,0 +1,11 @@
+image:
+  name: latest
+  command: src/kijiji/functions/upload_ads.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Upload Kijiji ad archive
+environment:
+  KIJIJI_AD_ARCHIVE_BUCKET_NAME: !Ref kijijiAdArchiveBucket
+iamRoleStatements:
+  - Effect: Allow
+    Action: s3:PutObject
+    Resource: !Sub ${kijijiAdArchiveBucket.Arn}/*

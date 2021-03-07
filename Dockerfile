@@ -1,21 +1,9 @@
-FROM lambci/lambda:build-python3.8
+FROM public.ecr.aws/george-lim/firefox-lambda:1.0.1
 
-# Copy requirements.txt
-COPY requirements.txt /var/artifacts/requirements.txt
+ENV FIREFOX_BINARY_PATH=/opt/firefox/firefox
 
-# Download Chromium artifacts
-WORKDIR /var/artifacts/chromium
-RUN curl -sLO https://github.com/alixaxel/chrome-aws-lambda/raw/v5.5.0/bin/aws.tar.br \
-  && curl -sLO https://github.com/alixaxel/chrome-aws-lambda/raw/v5.5.0/bin/chromium.br \
-  && curl -sLO https://github.com/alixaxel/chrome-aws-lambda/raw/v5.5.0/bin/swiftshader.tar.br
+COPY requirements.txt .
 
-# Download Python requirements
-WORKDIR /var/artifacts
-RUN python3 -m pip install --no-cache-dir requests==2.25.1 \
-  && python3 -m pip install --no-cache-dir -r requirements.txt -t python \
-  && find python -name '*.so' -exec strip {} \;
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
-# Package layer artifacts
-RUN zip -r chromium.zip chromium \
-  && zip -r requirements.zip python \
-  && rm -r chromium python requirements.txt
+COPY src src

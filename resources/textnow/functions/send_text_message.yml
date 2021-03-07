@@ -1,0 +1,14 @@
+image:
+  name: latest
+  command: src/textnow/functions/send_text_message.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Send a text message on TextNow
+memorySize: 2048
+timeout: 60
+environment:
+  SERVICE_NAME: ${self:custom.textnow.serviceName}
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:GetItem
+    Resource: !GetAtt usersTable.Arn

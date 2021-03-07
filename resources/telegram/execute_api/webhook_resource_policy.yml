@@ -1,5 +1,5 @@
 Effect: Allow
-Principal: '*'
+Principal: "*"
 Action: execute-api:Invoke
 Resource: execute-api:/*/POST/${self:custom.telegram.webhookPath}
 Condition:

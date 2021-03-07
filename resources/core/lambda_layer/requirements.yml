@@ -1,3 +1,0 @@
-description: Python dependencies from requirements.txt
-package:
-  artifact: .serverless/requirements.zip

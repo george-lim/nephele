@@ -1,6 +1,6 @@
-org: georgelim
-app: nephele
 service: nephele
+app: nephele
+org: georgelim
 
 provider:
   name: aws
@@ -8,74 +8,49 @@ provider:
   logRetentionInDays: 14
   deploymentBucket:
     maxPreviousDeploymentArtifacts: 1
-  role: !GetAtt defaultLambdaRole.Arn
+  ecr:
+    images:
+      latest:
+        path: "."
   versionFunctions: false
   environment:
     TELEGRAM_INTERFACE_NAME: ${self:custom.telegram.interfaceName}
     TELEGRAM_REQUEST_BASE_URL: ${self:custom.telegram.requestBaseUrl}
     USERS_TABLE_NAME: !Ref usersTable
-  apiGateway:
-    resourcePolicy:
-      - ${file(resources/telegram/execute_api/webhook_resource_policy.yml)}
-  layers:
-    - !Ref RequirementsLambdaLayer
-
-package:
-  include:
-    - '!**'
-    - lib/**
-  excludeDevDependencies: false
+  resourcePolicy:
+    - ${file(resources/telegram/execute_api/webhook_resource_policy.yml)}
 
 functions:
-  epicGamesLogIn: ${file(resources/epic_games/lambda_function/log_in.yml)}
-  epicGamesLogOut: ${file(resources/epic_games/lambda_function/log_out.yml)}
-  epicGamesPurchaseFreeContent: ${file(resources/epic_games/lambda_function/purchase_free_content.yml)}
-  eventsDeleteEvent: ${file(resources/events/lambda_function/delete_event.yml)}
-  eventsDisableEvent: ${file(resources/events/lambda_function/disable_event.yml)}
-  eventsEnableEvent: ${file(resources/events/lambda_function/enable_event.yml)}
-  eventsListEvents: ${file(resources/events/lambda_function/list_events.yml)}
-  eventsPutEvent: ${file(resources/events/lambda_function/put_event.yml)}
-  kijijiDeleteAds: ${file(resources/kijiji/lambda_function/delete_ads.yml)}
-  kijijiDownloadAds: ${file(resources/kijiji/lambda_function/download_ads.yml)}
-  kijijiLogIn: ${file(resources/kijiji/lambda_function/log_in.yml)}
-  kijijiLogOut: ${file(resources/kijiji/lambda_function/log_out.yml)}
-  kijijiRepostAds: ${file(resources/kijiji/lambda_function/repost_ads.yml)}
-  kijijiUploadAds: ${file(resources/kijiji/lambda_function/upload_ads.yml)}
-  replyMessage: ${file(resources/core/lambda_function/reply_message.yml)}
-  textnowLogIn: ${file(resources/textnow/lambda_function/log_in.yml)}
-  textnowLogOut: ${file(resources/textnow/lambda_function/log_out.yml)}
-  textnowSendMessage: ${file(resources/textnow/lambda_function/send_message.yml)}
+  epicGamesLogIn: ${file(resources/epic_games/functions/log_in.yml)}
+  epicGamesListOffers: ${file(resources/epic_games/functions/list_offers.yml)}
+  epicGamesPurchaseOffers: ${file(resources/epic_games/functions/purchase_offers.yml)}
+  epicGamesLogOut: ${file(resources/epic_games/functions/log_out.yml)}
+  eventsPutEvent: ${file(resources/events/functions/put_event.yml)}
+  eventsListEvents: ${file(resources/events/functions/list_events.yml)}
+  eventsEnableEvent: ${file(resources/events/functions/enable_event.yml)}
+  eventsDisableEvent: ${file(resources/events/functions/disable_event.yml)}
+  eventsDeleteEvent: ${file(resources/events/functions/delete_event.yml)}
+  kijijiLogIn: ${file(resources/kijiji/functions/log_in.yml)}
+  kijijiUploadAds: ${file(resources/kijiji/functions/upload_ads.yml)}
+  kijijiDownloadAds: ${file(resources/kijiji/functions/download_ads.yml)}
+  kijijiRepostAds: ${file(resources/kijiji/functions/repost_ads.yml)}
+  kijijiDeleteAds: ${file(resources/kijiji/functions/delete_ads.yml)}
+  kijijiLogOut: ${file(resources/kijiji/functions/log_out.yml)}
+  textnowLogIn: ${file(resources/textnow/functions/log_in.yml)}
+  textnowSendTextMessage: ${file(resources/textnow/functions/send_text_message.yml)}
+  textnowLogOut: ${file(resources/textnow/functions/log_out.yml)}
+  replyMessage: ${file(resources/core/functions/reply_message.yml)}
 
-layers:
-  chromium: ${file(resources/core/lambda_layer/chromium.yml)}
-  requirements: ${file(resources/core/lambda_layer/requirements.yml)}
+configValidationMode: error
 
 resources:
   - ${file(resources/core/dynamodb/users_table.yml)}
-  - ${file(resources/core/iam/default_lambda_role.yml)}
-  - ${file(resources/epic_games/iam/log_in_role.yml)}
-  - ${file(resources/epic_games/iam/log_out_role.yml)}
-  - ${file(resources/epic_games/iam/purchase_free_content_role.yml)}
-  - ${file(resources/events/iam/delete_event_role.yml)}
-  - ${file(resources/events/iam/disable_event_role.yml)}
-  - ${file(resources/events/iam/enable_event_role.yml)}
-  - ${file(resources/events/iam/list_events_role.yml)}
-  - ${file(resources/events/iam/put_event_role.yml)}
-  - ${file(resources/events/iam/start_execution_role.yml)}
-  - ${file(resources/kijiji/iam/delete_ads_role.yml)}
-  - ${file(resources/kijiji/iam/download_ads_role.yml)}
-  - ${file(resources/kijiji/iam/log_in_role.yml)}
-  - ${file(resources/kijiji/iam/log_out_role.yml)}
-  - ${file(resources/kijiji/iam/repost_ads_role.yml)}
-  - ${file(resources/kijiji/iam/upload_ads_role.yml)}
+  - ${file(resources/events/iam/execute_request_role.yml)}
   - ${file(resources/kijiji/s3/kijiji_ad_archive_bucket.yml)}
-  - ${file(resources/textnow/iam/log_in_role.yml)}
-  - ${file(resources/textnow/iam/log_out_role.yml)}
-  - ${file(resources/textnow/iam/send_message_role.yml)}
 
 plugins:
-  - '@serverless/safeguards-plugin'
   - serverless-export-outputs
+  - serverless-iam-roles-per-function
   - serverless-plugin-scripts
   - serverless-step-functions
 
@@ -86,7 +61,6 @@ custom:
   kijiji: ${file(resources/kijiji/constants.yml)}
   telegram: ${file(resources/telegram/constants.yml)}
   textnow: ${file(resources/textnow/constants.yml)}
-  safeguards: ${file(safeguards.yml)}
   exportOutputs:
     include:
       - ServiceEndpoint
@@ -96,22 +70,15 @@ custom:
     output:
       file: ./.serverless/serverless_outputs.json
       format: json
+  serverless-iam-roles-per-function:
+    defaultInherit: true
   scripts:
-    commands:
-      clean: python3 scripts/core/clean.py ${self:org} ${self:app}
     hooks:
-      package:createDeploymentArtifacts: |
-        python3 scripts/core/create_layer_artifacts.py \
-          ${self:org} ${self:app} \
-          ${self:layers.chromium.package.artifact} \
-          ${self:layers.requirements.package.artifact}
       deploy:finalize: |
         python3 scripts/telegram/set_webhook.py \
-          ${self:org} ${self:app} \
-          ${opt:stage, self:provider.stage} \
           ${self:custom.exportOutputs.output.file}
 
 stepFunctions:
   stateMachines:
-    coreRequest: ${file(resources/core/states_state_machine/request.yml)}
-    telegramRequest: ${file(resources/telegram/states_state_machine/request.yml)}
+    coreRequest: ${file(resources/core/state_machines/request.yml)}
+    telegramRequest: ${file(resources/telegram/state_machines/request.yml)}

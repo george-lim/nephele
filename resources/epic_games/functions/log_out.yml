@@ -1,0 +1,11 @@
+image:
+  name: latest
+  command: src/epic_games/functions/log_out.handler
+  entryPoint: /lambda-entrypoint.sh
+description: Log out of Epic Games
+environment:
+  SERVICE_NAME: ${self:custom.epicGames.serviceName}
+iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:UpdateItem
+    Resource: !GetAtt usersTable.Arn

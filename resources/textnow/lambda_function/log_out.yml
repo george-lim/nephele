@@ -1,5 +1,0 @@
-handler: lib/textnow/lambda_function/log_out.handler
-description: Log out of TextNow
-role: !GetAtt textnowLogOutRole.Arn
-environment:
-  SERVICE_NAME: ${self:custom.textnow.serviceName}
