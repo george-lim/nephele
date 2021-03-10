@@ -5,6 +5,8 @@
 [![codecov](https://codecov.io/gh/george-lim/nephele/branch/main/graph/badge.svg)](https://codecov.io/gh/george-lim/nephele)
 [![license](https://img.shields.io/github/license/george-lim/nephele)](https://github.com/george-lim/nephele/blob/main/LICENSE)
 
+[![banner](https://user-images.githubusercontent.com/21700768/110575939-cabfa200-812d-11eb-9e68-60fbfd0116fa.png)](https://t.me/NepheleBot)
+
 ## [Usage](#usage) | [Features](#features) | [CI/CD](#cicd)
 
 Nephele is an AWS serverless application that hosts George's cloud-compatible side projects.
