@@ -1,3 +1,0 @@
-resourcePrefix: ${self:service}-${opt:stage, self:provider.stage}-${opt:region, self:provider.region}
-stateMachine:
-  requestName: ${self:custom.core.resourcePrefix}-coreRequest

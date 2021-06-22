@@ -1,5 +1,4 @@
-epic-games-bot==1.0.2
-kijiji-bot==1.0.8
-playwright==1.8.0a1
 requests==2.25.1
-textnow-bot==1.0.6
+epicstore_api==0.1.3
+git+ssh://git@github.com/george-lim/kijiji-bot.git
+git+ssh://git@github.com/george-lim/PyTextNow_API.git

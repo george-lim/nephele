@@ -1,8 +1,0 @@
-serviceName: textnow
-functions:
-  logIn:
-    command: /logintextnow
-  sendTextMessage:
-    command: /sendtextmessage
-  logOut:
-    command: /logouttextnow

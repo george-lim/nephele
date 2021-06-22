@@ -1,5 +1,0 @@
-image:
-  name: latest
-  command: src/core/functions/reply_message.handler
-  entryPoint: /lambda-entrypoint.sh
-description: Reply to request with a message

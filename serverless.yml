@@ -8,77 +8,96 @@ provider:
   logRetentionInDays: 14
   deploymentBucket:
     maxPreviousDeploymentArtifacts: 1
-  ecr:
-    images:
-      latest:
-        path: "."
   versionFunctions: false
-  environment:
-    TELEGRAM_INTERFACE_NAME: ${self:custom.telegram.interfaceName}
-    TELEGRAM_REQUEST_BASE_URL: ${self:custom.telegram.requestBaseUrl}
-    USERS_TABLE_NAME: !Ref usersTable
-  resourcePolicy:
-    - ${file(resources/telegram/execute_api/webhook_resource_policy.yml)}
+  apiGateway:
+    resourcePolicy:
+      - Effect: Allow
+        Principal: "*"
+        Action: execute-api:Invoke
+        Resource: execute-api:/*/POST/webhook
+        Condition:
+          IpAddress:
+            aws:SourceIp:
+              - 149.154.160.0/20
+              - 91.108.4.0/22
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - events:DescribeRule
+            - events:ListTargetsByRule
+            - events:PutRule
+            - events:PutTargets
+            - events:DeleteRule
+            - events:RemoveTargets
+          Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*
+  tracing:
+    apiGateway: false
+    lambda: false
+  logs:
+    restApi: false
+
+package:
+  patterns:
+    - "!*"
+    - "*.py"
 
 functions:
-  epicGamesLogIn: ${file(resources/epic_games/functions/log_in.yml)}
-  epicGamesListOffers: ${file(resources/epic_games/functions/list_offers.yml)}
-  epicGamesPurchaseOffers: ${file(resources/epic_games/functions/purchase_offers.yml)}
-  epicGamesLogOut: ${file(resources/epic_games/functions/log_out.yml)}
-  eventsPutEvent: ${file(resources/events/functions/put_event.yml)}
-  eventsListEvents: ${file(resources/events/functions/list_events.yml)}
-  eventsEnableEvent: ${file(resources/events/functions/enable_event.yml)}
-  eventsDisableEvent: ${file(resources/events/functions/disable_event.yml)}
-  eventsDeleteEvent: ${file(resources/events/functions/delete_event.yml)}
-  kijijiLogIn: ${file(resources/kijiji/functions/log_in.yml)}
-  kijijiUploadAds: ${file(resources/kijiji/functions/upload_ads.yml)}
-  kijijiDownloadAds: ${file(resources/kijiji/functions/download_ads.yml)}
-  kijijiRepostAds: ${file(resources/kijiji/functions/repost_ads.yml)}
-  kijijiDeleteAds: ${file(resources/kijiji/functions/delete_ads.yml)}
-  kijijiLogOut: ${file(resources/kijiji/functions/log_out.yml)}
-  textnowLogIn: ${file(resources/textnow/functions/log_in.yml)}
-  textnowSendTextMessage: ${file(resources/textnow/functions/send_text_message.yml)}
-  textnowLogOut: ${file(resources/textnow/functions/log_out.yml)}
-  replyMessage: ${file(resources/core/functions/reply_message.yml)}
+  webhook:
+    handler: nephele/webhook.handler
+    memorySize: 10240
+    timeout: 900
+    environment:
+      eventsTargetArn: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${sls:stage}-webhook
+      telegramBotApiUrl: https://api.telegram.org/bot${param:telegramBotApiToken}
+    maximumRetryAttempts: 0
+    events:
+      - http:
+          path: webhook
+          method: POST
+          async: true
+          request:
+            template:
+              application/json: |
+                #set($text = $input.path("$.message.text"))
+                #set($chatId = $input.path("$.message.chat.id"))
 
-configValidationMode: error
+                #if($!{text} == "")
+                  #set($text = $input.path("$.edited_message.text"))
+                  #set($chatId = $input.path("$.edited_message.chat.id"))
+                #end
+
+                #set($text = $text.replaceAll("“|”", '\"'))
+                #set($text = $text.replaceAll("‘|’", "'"))
+                #set($text = $text.replaceAll('\\', '\\\\'))
+                #set($text = $text.replaceAll('\f', '\\f'))
+                #set($text = $text.replaceAll('\n', '\\n'))
+                #set($text = $text.replaceAll('\r', '\\r'))
+                #set($text = $text.replaceAll('\t', '\\t'))
+                #set($text = $text.replaceAll('\"', '\\\"'))
+
+                {
+                  "text": "$text",
+                  "chatId": "$chatId",
+                  "namespace": "${self:service}-${sls:stage}-$chatId"
+                }
 
 resources:
-  - ${file(resources/core/dynamodb/users_table.yml)}
-  - ${file(resources/events/iam/execute_request_role.yml)}
-  - ${file(resources/kijiji/s3/kijiji_ad_archive_bucket.yml)}
+  Resources:
+    WebhookLambdaPermissionEvents:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt WebhookLambdaFunction.Arn
+        Principal: events.amazonaws.com
+        Action: lambda:InvokeFunction
+        SourceArn: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*
 
 plugins:
-  - serverless-export-outputs
-  - serverless-iam-roles-per-function
-  - serverless-plugin-scripts
-  - serverless-step-functions
+  - serverless-python-requirements
 
 custom:
-  core: ${file(resources/core/constants.yml)}
-  epicGames: ${file(resources/epic_games/constants.yml)}
-  events: ${file(resources/events/constants.yml)}
-  kijiji: ${file(resources/kijiji/constants.yml)}
-  telegram: ${file(resources/telegram/constants.yml)}
-  textnow: ${file(resources/textnow/constants.yml)}
-  exportOutputs:
-    include:
-      - ServiceEndpoint
-      - TelegramBotApiToken: ${self:custom.telegram.botApiToken}
-      - TelegramSetWebhookUrl: ${self:custom.telegram.requestBaseUrl}/setWebhook
-      - TelegramWebhookPath: ${self:custom.telegram.webhookPath}
-    output:
-      file: ./.serverless/serverless_outputs.json
-      format: json
-  serverless-iam-roles-per-function:
-    defaultInherit: true
-  scripts:
-    hooks:
-      deploy:finalize: |
-        python3 scripts/telegram/set_webhook.py \
-          ${self:custom.exportOutputs.output.file}
-
-stepFunctions:
-  stateMachines:
-    coreRequest: ${file(resources/core/state_machines/request.yml)}
-    telegramRequest: ${file(resources/telegram/state_machines/request.yml)}
+  pythonRequirements:
+    slim: true
+    pythonBin: python3
+    staticCacheMaxVersions: 2

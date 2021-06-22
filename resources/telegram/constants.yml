@@ -1,4 +1,0 @@
-botApiToken: ${param:TELEGRAM_BOT_API_TOKEN, ""}
-interfaceName: telegram
-requestBaseUrl: https://api.telegram.org/bot${self:custom.telegram.botApiToken}
-webhookPath: ${self:custom.telegram.interfaceName}/webhook
