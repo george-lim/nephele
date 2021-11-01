@@ -13,13 +13,14 @@ def send_sms(event):
     telegram = Telegram(event)
 
     username = event["textnow_username"]
-    cookie = event["textnow_cookie"]
+    sid_cookie = event["textnow_sid_cookie"]
+    csrf_cookie = event["textnow_csrf_cookie"]
     to = event["textnow_to"]
     text = event["textnow_text"]
-    user_sids_path = Path(f"/tmp/{event['namespace']}/user_sids.json")
+    user_cookies_file = Path(f"/tmp/{event['namespace']}/user_cookies.json")
 
     try:
-        client = pytextnow.Client(username, cookie, user_sids_path)
+        client = pytextnow.Client(username, sid_cookie, csrf_cookie, user_cookies_file)
     except Exception:
         telegram.send_message(
             "An unexpected error occurred while logging into TextNow."
@@ -46,7 +47,8 @@ def check_message_event_status(event):
 
         telegram.send_message(
             f"""Username: {rule_info["event"]["textnow_username"]}
-Cookie (connect.sid): {rule_info["event"]["textnow_cookie"]}
+Cookie (connect.sid): {rule_info["event"]["textnow_sid_cookie"]}
+Cookie (_csrf): {rule_info["event"]["textnow_csrf_cookie"]}
 To: {rule_info["event"]["textnow_to"]}
 Text: {rule_info["event"]["textnow_text"]}
 Cron Expression: {rule_info["cron_expression"]}"""
@@ -71,7 +73,7 @@ def set_message_event(event):
 
     if len(args) < 5:
         telegram.send_message(
-            f"usage: {Command.SET_TEXTNOW_MESSAGE_EVENT.value} <username> <connect.sid cookie> <recipient> <text> <cron expression>"  # noqa: E501
+            f"usage: {Command.SET_TEXTNOW_MESSAGE_EVENT.value} <username> <connect.sid cookie> <_csrf cookie> <recipient> <text> <cron expression>"  # noqa: E501
         )
 
         return
@@ -79,10 +81,11 @@ def set_message_event(event):
     event["text"] = Command.SCHEDULE_TEXTNOW_SEND_SMS.value
     event["is_scheduled"] = True
     event["textnow_username"] = args[0]
-    event["textnow_cookie"] = args[1]
-    event["textnow_to"] = args[2]
-    event["textnow_text"] = args[3]
-    cron_expression = args[4]
+    event["textnow_sid_cookie"] = args[1]
+    event["textnow_csrf_cookie"] = args[2]
+    event["textnow_to"] = args[3]
+    event["textnow_text"] = args[4]
+    cron_expression = args[5]
 
     telegram.send_message("Testing TextNow message event...")
     send_sms(event)
