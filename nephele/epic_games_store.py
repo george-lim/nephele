@@ -9,33 +9,19 @@ _EVENT_CRON_EXPRESSION = "0 22 ? * 5 *"
 
 def _get_offer_urls():
     api = EpicGamesStoreAPI()
-    free_games = api.get_free_games()["data"]["Catalog"]["searchStore"]["elements"]
+    games = api.get_free_games()["data"]["Catalog"]["searchStore"]["elements"]
     offer_urls = []
 
-    for free_game in free_games:
-        promotions = free_game.get("promotions")
+    for game in games:
+        original_price = game["price"]["totalPrice"]["originalPrice"]
+        discount_price = game["price"]["totalPrice"]["discountPrice"]
 
-        if promotions and promotions.get("promotionalOffers"):
-            product_slug = free_game["productSlug"].split("/", 1)[0]
-            product = api.get_product(product_slug)
+        if original_price == 0 or discount_price != 0:
+            continue
 
-            offers = []
-            addon_offers = []
-
-            for page in product["pages"]:
-                if page["type"] == "productHome":
-                    offers.append(page["offer"])
-                elif page["type"] in ["addon", "offer"]:
-                    addon_offers.append(page["offer"])
-
-            offers.extend(addon_offers)
-
-            offer_urls.extend(
-                map(
-                    lambda x: f"https://www.epicgames.com/store/purchase?namespace={x['namespace']}&offers={x['id']}",
-                    offers,
-                )
-            )
+        offer_urls.append(
+            f"https://store.epicgames.com/p/{game['catalogNs']['mappings'][0]['pageSlug']}"
+        )
 
     return offer_urls
 
