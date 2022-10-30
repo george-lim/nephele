@@ -1,3 +1,4 @@
+---
 name: CD
 
 on:
@@ -17,14 +18,14 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-    - name: Strip target version prefix
-      run: echo TARGET_VERSION=${TARGET_VERSION#refs/*/v} >> $GITHUB_ENV
-    - name: Create release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ env.TARGET_VERSION }}
-        release_name: Release v${{ env.TARGET_VERSION }}
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Strip target version prefix
+        run: echo "TARGET_VERSION=${TARGET_VERSION#refs/*/v}" >> "$GITHUB_ENV"
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.TARGET_VERSION }}
+          release_name: Release v${{ env.TARGET_VERSION }}
